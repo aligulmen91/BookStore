@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BookStore.DbOperations;
+using BookStore.BookOperations.GetBooks;
 
 namespace BookStore.Controllers
 {
@@ -18,24 +19,19 @@ namespace BookStore.Controllers
             _context = context;
         }
 
-        //private static List<Book> BookList = new List<Book>()
-        //{
-        //    //when we don't use database, we can define a list to work on it
-        //    new Book{Id=1,Title="Lean Startup",GenreId=1,PageCount=200,PublishDate= new DateTime(2015,06,11)},
-        //    new Book{Id=2,Title="Herland",GenreId=2,PageCount=250,PublishDate= new DateTime(2001,02,10)},
-        //    new Book{Id=3,Title="Dune",GenreId=2,PageCount=250,PublishDate= new DateTime(2001,02,10)}
-        //};
-
 
 
         //create end points - use LINQ
 
         //api/Books
         [HttpGet]
-        public List<Book> GetBooks()
+        public IActionResult GetBooks()
         {
-            var bookList = _context.Books.OrderBy(b => b.Id).ToList<Book>();
-            return bookList;
+            //we can use query now. 
+            GetBooksQuery query = new GetBooksQuery(_context);
+            var result = query.Handle();
+            return Ok(result);
+
         }
 
 
