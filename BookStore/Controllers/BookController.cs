@@ -8,6 +8,11 @@ using BookStore.DbOperations;
 using BookStore.BookOperations.GetBooks;
 using BookStore.BookOperations.CreateBook;
 using static BookStore.BookOperations.CreateBook.CreateBookCommand;
+using BookStore.BookOperations.GetBookDetail;
+using static BookStore.BookOperations.GetBookDetail.GetBookDetailQuery;
+using BookStore.BookOperations.UpdateBook;
+using static BookStore.BookOperations.UpdateBook.UpdateBookCommand;
+using BookStore.BookOperations.DeleteBook;
 
 namespace BookStore.Controllers
 {
@@ -26,7 +31,7 @@ namespace BookStore.Controllers
         [HttpGet]
         public IActionResult GetBooks()
         {         
-            GetBooksQuery query = new GetBooksQuery(_context);
+            var query = new GetBooksQuery(_context);
             var result = query.Handle();
             return Ok(result);
 
@@ -35,9 +40,9 @@ namespace BookStore.Controllers
 
         //add new books api/Books
         [HttpPost]
-        public IActionResult AddBook([FromBody] CreteBookModel newBook)
+        public IActionResult AddBook([FromBody] CreateBookModel newBook)
         {
-            CreateBookCommand command = new CreateBookCommand(_context);
+            var command = new CreateBookCommand(_context);
             try
             {        
                 command.Model = newBook;
@@ -55,10 +60,21 @@ namespace BookStore.Controllers
 
         //api/Books/3
         [HttpGet("{id}")]
-        public Book GetBooksById(int id)
+        public IActionResult GetBooksById(int id)
         {
-            var book = _context.Books.Where(b=>b.Id == id).SingleOrDefault();
-            return book;
+            BookDetailViewModel result;
+            try
+            {
+                var query = new GetBookDetailQuery(_context);
+                query.BookId = id;
+                result= query.Handle();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
+            return Ok(result);
         }
 
 
@@ -75,29 +91,38 @@ namespace BookStore.Controllers
 
         //update a book  api/Books
         [HttpPut("{id}")]
-        public IActionResult UpdateBook(int id, [FromBody] Book updateBook)
+        public IActionResult UpdateBook(int id, [FromBody] UpdateBookModel updateBook)
         {
-            var book = _context.Books.SingleOrDefault(b => b.Id == id); //at first, find the book to update
-            if (book is null)
-                return BadRequest();
-            //if the value is not default, it means user already tried to update it. We can use input value. Otherwise, use recorded value and don't change it
-            book.GenreId = updateBook.GenreId != default ? updateBook.GenreId : book.GenreId; 
-            book.Title = updateBook.Title != default ? updateBook.Title : book.Title; 
-            book.PageCount = updateBook.PageCount != default ? updateBook.PageCount : book.PageCount; 
-            book.PublishDate = updateBook.PublishDate != default ? updateBook.PublishDate : book.PublishDate;
-            _context.SaveChanges(); //every time we make some changes on dbcontext, don't forget to savechanges.
+            try
+            {
+                UpdateBookCommand command = new UpdateBookCommand(_context);
+                command.BookId = id;
+                command.Model = updateBook;
+                command.Handle();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
             return Ok();
         }
+
+
 
         //api/Books/3
         [HttpDelete("{id}")]
         public IActionResult DeleteBook(int id)
         {
-            var book = _context.Books.SingleOrDefault(b => b.Id == id); //is it exist?
-            if(book is null)
-                return BadRequest();
-            _context.Books.Remove(book);
-            _context.SaveChanges();
+            try
+            {
+                var command = new DeleteBookCommand(_context);
+                command.BookId = id;
+                command.Handle();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
             return Ok();
         }
 

@@ -9,7 +9,7 @@ namespace BookStore.BookOperations.CreateBook
 {
     public class CreateBookCommand
     {
-        public CreteBookModel Model { get; set; }
+        public CreateBookModel Model { get; set; }
 
         private readonly BookStoreDbContext _dbContext;
         public CreateBookCommand(BookStoreDbContext dbContext)
@@ -37,7 +37,7 @@ namespace BookStore.BookOperations.CreateBook
 
 
         //this is what we get from user
-        public class CreteBookModel
+        public class CreateBookModel
         {
             public string Title { get; set; }
             public int GenreId { get; set; }
