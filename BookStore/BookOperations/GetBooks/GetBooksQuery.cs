@@ -1,9 +1,7 @@
 ﻿using BookStore.Common;
 using BookStore.DbOperations;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BookStore.BookOperations.GetBooks
 {

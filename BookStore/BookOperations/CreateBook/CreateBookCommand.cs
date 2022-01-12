@@ -1,9 +1,6 @@
 ﻿using BookStore.DbOperations;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using static BookStore.BookOperations.CreateBook.CreateBookCommand;
 
 namespace BookStore.BookOperations.CreateBook
 {
