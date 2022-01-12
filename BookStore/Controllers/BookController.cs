@@ -9,6 +9,7 @@ using static BookStore.BookOperations.GetBookDetail.GetBookDetailQuery;
 using BookStore.BookOperations.UpdateBook;
 using static BookStore.BookOperations.UpdateBook.UpdateBookCommand;
 using BookStore.BookOperations.DeleteBook;
+using AutoMapper;
 
 namespace BookStore.Controllers
 {
@@ -17,9 +18,12 @@ namespace BookStore.Controllers
     public class BookController : ControllerBase
     {
         private readonly BookStoreDbContext _context;
-        public BookController(BookStoreDbContext context)
+
+        private readonly IMapper _mapper;
+        public BookController(BookStoreDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
 
@@ -38,7 +42,7 @@ namespace BookStore.Controllers
         [HttpPost]
         public IActionResult AddBook([FromBody] CreateBookModel newBook)
         {
-            var command = new CreateBookCommand(_context);
+            var command = new CreateBookCommand(_context,_mapper);
             try
             {        
                 command.Model = newBook;
