@@ -29,11 +29,6 @@ namespace BookStore.BookOperations.CreateBook
             
             
             book = _mapper.Map<Book>(Model); //automapper sayesinde model ile gelen veriyi book objesine maple
-            //book = new Book();
-            //book.Title = Model.Title;
-            //book.PublishDate = Model.PublishDate;
-            //book.PageCount = Model.PageCount;
-            //book.GenreId = Model.GenreId;
 
             _dbContext.Books.Add(book);
             _dbContext.SaveChanges();

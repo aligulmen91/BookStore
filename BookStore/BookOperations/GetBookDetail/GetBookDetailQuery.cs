@@ -1,4 +1,5 @@
-﻿using BookStore.Common;
+﻿using AutoMapper;
+using BookStore.Common;
 using BookStore.DbOperations;
 using System;
 using System.Linq;
@@ -8,10 +9,13 @@ namespace BookStore.BookOperations.GetBookDetail
     public class GetBookDetailQuery
     {
         private readonly BookStoreDbContext _dbContext;
+        private readonly IMapper _mapper;
         public int BookId { get; set; } //the id which will come from outside
-        public GetBookDetailQuery(BookStoreDbContext dbContext)
+  
+        public GetBookDetailQuery(BookStoreDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
 
@@ -22,11 +26,9 @@ namespace BookStore.BookOperations.GetBookDetail
             if (book is null)
                 throw new InvalidOperationException("The book is not exist!");
 
-            var vm = new BookDetailViewModel();
-            vm.Title = book.Title;
-            vm.PageCount = book.PageCount;
-            vm.PublishDate = book.PublishDate.Date.ToString("dd/MM/yyyy");
-            vm.Genre = ((GenreEnum)book.GenreId).ToString();
+            var vm = _mapper.Map<BookDetailViewModel>(book);
+
+         
             return vm;
         }
 

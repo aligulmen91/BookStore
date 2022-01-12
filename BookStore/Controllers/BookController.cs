@@ -65,7 +65,7 @@ namespace BookStore.Controllers
             BookDetailViewModel result;
             try
             {
-                var query = new GetBookDetailQuery(_context);
+                var query = new GetBookDetailQuery(_context, _mapper);
                 query.BookId = id;
                 result= query.Handle();
             }
@@ -77,16 +77,6 @@ namespace BookStore.Controllers
             return Ok(result);
         }
 
-
-        //api/Books?id=3
-        //[HttpGet]
-        //public Book Get([FromQuery]string id)
-        //{
-        //    var book = BookList.Where(b => b.Id == Convert.ToInt32(id)).SingleOrDefault();
-        //    return book;
-        //}
-
-       
 
 
         //update a book  api/Books
