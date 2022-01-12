@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using BookStore.DbOperations;
 using BookStore.BookOperations.GetBooks;
+using BookStore.BookOperations.CreateBook;
+using static BookStore.BookOperations.CreateBook.CreateBookCommand;
 
 namespace BookStore.Controllers
 {
@@ -20,19 +22,34 @@ namespace BookStore.Controllers
         }
 
 
-
-        //create end points - use LINQ
-
         //api/Books
         [HttpGet]
         public IActionResult GetBooks()
-        {
-            //we can use query now. 
+        {         
             GetBooksQuery query = new GetBooksQuery(_context);
             var result = query.Handle();
             return Ok(result);
 
         }
+
+
+        //add new books api/Books
+        [HttpPost]
+        public IActionResult AddBook([FromBody] CreteBookModel newBook)
+        {
+            CreateBookCommand command = new CreateBookCommand(_context);
+            try
+            {        
+                command.Model = newBook;
+                command.Handle();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return Ok();
+        }
+
 
 
 
@@ -53,18 +70,7 @@ namespace BookStore.Controllers
         //    return book;
         //}
 
-        //add new books api/Books
-        [HttpPost]
-        public IActionResult AddBook([FromBody] Book newBook)
-        {
-            var book = _context.Books.SingleOrDefault(b => b.Title == newBook.Title); //check if we already have that book
-            if (book is not null)
-                return BadRequest();
-            
-            _context.Books.Add(newBook);
-            _context.SaveChanges();
-            return Ok();
-        }
+       
 
 
         //update a book  api/Books
