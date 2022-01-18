@@ -10,6 +10,8 @@ using BookStore.BookOperations.UpdateBook;
 using static BookStore.BookOperations.UpdateBook.UpdateBookCommand;
 using BookStore.BookOperations.DeleteBook;
 using AutoMapper;
+using FluentValidation.Results;
+using FluentValidation;
 
 namespace BookStore.Controllers
 {
@@ -46,7 +48,18 @@ namespace BookStore.Controllers
             try
             {        
                 command.Model = newBook;
+                CreateBookCommandValidator validator = new CreateBookCommandValidator();
+                validator.ValidateAndThrow(command);
                 command.Handle();
+
+                //ValidationResult result = validator.Validate(command);
+                //if (!result.IsValid)
+                //    foreach (var item in result.Errors)
+                //    {
+                //        Console.WriteLine("Özellik {0} - Error Message : {1}", item.PropertyName, item.ErrorMessage);
+                //    }
+                //else
+                //command.Handle();
             }
             catch (Exception ex)
             {
@@ -107,6 +120,11 @@ namespace BookStore.Controllers
             {
                 var command = new DeleteBookCommand(_context);
                 command.BookId = id;
+
+                DeleteBookCommandValidator validator = new DeleteBookCommandValidator();
+                validator.ValidateAndThrow(command);
+              
+
                 command.Handle();
             }
             catch (Exception ex)
